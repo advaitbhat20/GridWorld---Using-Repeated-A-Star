@@ -4,7 +4,6 @@ import random
 
 def create_grid(n):
     matrix = [ [ 0 for i in range(n) ] for j in range(n) ]
-    print(matrix)
 
     p = 0.75
     for i in range(n):
@@ -13,7 +12,6 @@ def create_grid(n):
                 matrix[i][j] = 0
             else:
                 prob = random.uniform(0, 1)
-                print(prob)
                 if prob >= p:
                     matrix[i][j] = 1
                 else:

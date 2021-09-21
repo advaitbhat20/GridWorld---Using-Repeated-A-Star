@@ -34,7 +34,7 @@ class PriorityQueue:
       # traverse the queue to find the right place for new node
       for x in range(0, self.size()):
         # if the heuristic of new node is less than
-        if node.f < self.queue[x].f:
+        if node.f >= self.queue[x].f:
           # if we have traversed the complete queue
           if x == (self.size()-1):
             # add new node at the end
@@ -107,11 +107,15 @@ knowledge = [ [ 0 for i in range(5) ] for j in range(5) ]
 pQueue = PriorityQueue()
 node1 = Node([0,0],)
 node2 = Node([2,2],[1,2])
+node3 = Node([1,3],[1,2])
 
 node1.f = calc_manhattan(node1.position, [5,5])
 node2.f = calc_manhattan(node2.position, [5,5])
+node3.f = calc_manhattan(node3.position, [5,5])
+
 
 pQueue.insert(node1)
 pQueue.insert(node2)
+pQueue.insert(node3)
 
 pQueue.show()

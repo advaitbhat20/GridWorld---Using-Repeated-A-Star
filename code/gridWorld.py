@@ -4,21 +4,21 @@ import random
 import math
 
 class Node:
-    # Initialize the class
-    def __init__(self, position=None, parent=None):
-        self.position = position
-        self.parent = parent
-        self.g = 0
-        self.h = 0
-        self.f = 0
+  # Initialize the class
+  def __init__(self, position=None, parent=None):
+      self.position = position
+      self.parent = parent
+      self.g = 0
+      self.h = 0
+      self.f = 0
 
-    # Compare nodes
-    def __eq__(self, other):
-        return self.position == other.position
-    
-    # Print node
-    def __repr__(self):
-        return ('({0},{1})'.format(self.position, self.f))
+  # Compare nodes
+  def __eq__(self, other):
+      return self.position == other.position
+  
+  # Print node
+  def __repr__(self):
+      return ('({0},{1})'.format(self.position, self.f))
 
 class PriorityQueue:
   
@@ -57,43 +57,60 @@ class PriorityQueue:
     return len(self.queue)
 
 def create_grid(n):
-    matrix = [ [ 0 for i in range(n) ] for j in range(n) ]
+  matrix = [ [ 0 for i in range(n) ] for j in range(n) ]
 
-    p = 0.75
-    for i in range(n):
-        for j in range(n):
-            if (i == 0 and j == 0) or (i==n-1 and j==n-1):
-                matrix[i][j] = 0
-            else:
-                prob = random.uniform(0, 1)
-                if prob >= p:
-                    matrix[i][j] = 1
-                else:
-                    matrix[i][j] = 0
-    return matrix
+  p = 0.75
+  for i in range(n):
+      for j in range(n):
+          if (i == 0 and j == 0) or (i==n-1 and j==n-1):
+              matrix[i][j] = 0
+          else:
+              prob = random.uniform(0, 1)
+              if prob >= p:
+                  matrix[i][j] = 1
+              else:
+                  matrix[i][j] = 0
+  return matrix
 
 def print_grid(matrix):
-    n = len(matrix)
-    for i in range(len(matrix)):
-        for j in range(len(matrix[0])):
-            print(matrix[i][j], end=" ")
-        print("")
+  n = len(matrix)
+  for i in range(len(matrix)):
+      for j in range(len(matrix[0])):
+          print(matrix[i][j], end=" ")
+      print("")
 
 def calc_manhattan(a,b):
-    return abs(a[0]-b[0]) + abs(a[1]-b[1])
+  return abs(a[0]-b[0]) + abs(a[1]-b[1])
 
 def calc_euclidean(a,b):
-    return math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2)
+  return math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2)
 
 def calc_chebyshev(a,b):
-    return max(abs(a[0]-b[0]), abs(a[1]-b[1]))
+  return max(abs(a[0]-b[0]), abs(a[1]-b[1]))
 
 def astar(knowledge_grid,start,end):
-    # Initialize open and closed list
-    open_list = []
-    closed_list = []
+  # Initialize open and closed list
+  open_list = []
+  closed_list = []
 
-    return 0
+  return 0
+
+def implement(matrix, knowledge, path):
+  for itr in  range(len(path)):
+    i = path[itr][0]
+    j = path[itr][1]
+    if matrix[i][j] == 1:
+      return path[itr-1]
+    if i+1<len(matrix) and matrix[i+1][j]==1:
+      knowledge[i+1][j] = 1
+    if j+1<len(matrix) and matrix[i][j+1]==1:
+      knowledge[i][j+1] = 1
+    if i-1>0 and matrix[i-1][j]==1:
+      knowledge[i-1][j] = 1
+    if j-1>0 and matrix[i][j-1]==1:
+      knowledge[i][j-1] = 1
+  return path[len(path)-1]
+
 
 ######################################################
 # Function calls after this
@@ -101,7 +118,16 @@ def astar(knowledge_grid,start,end):
 matrix = create_grid(5)
 print_grid(matrix)
 
+print("")
 knowledge = [ [ 0 for i in range(5) ] for j in range(5) ]
+print_grid(knowledge)
+path = [[0,0],[0,1],[0,2],[0,3],[1,3],[2,3],[2,4],[3,4],[4,4]]
+
+print("now implement")
+print("")
+print("final<<", implement(matrix, knowledge, path))
+print("")
+print_grid(knowledge)
 
 
 pQueue = PriorityQueue()

@@ -41,6 +41,22 @@ class Node:
     def __repr__(self):
         return ('({0},{1})'.format(self.position, self.f))
     
+    def get_neigbours(self):   
+        #This returns the neighbours of the Node
+        neighbour_cord = [(-1, 0),(0, -1),(0, 1),(1, 0)]
+        current_x = self.position[0]
+        current_y = self.position[1]
+        neighbours = []
+        for n in neighbour_cord:
+            x = current_x + n[0]
+            y = current_y + n[1]
+            if 0 <= x < len(matrix) and 0 <= y < len(matrix):
+                c = Node()
+                c.position = (x, y)
+                c.parent = Node
+                neighbours.append(c)
+        return neighbours
+    
 
 class PriorityQueue:
   
@@ -120,21 +136,7 @@ class grid_voyage:
                         matrix[i][j] = 0
         return matrix
     
-    def get_neigbours(self, Node):   
-        #This returns the neighbours of the Node
-        neighbour_cord = [(-1, 0),(0, -1),(0, 1),(1, 0)]
-        current_x = Node.position[0]
-        current_y = Node.position[1]
-        neighbours = []
-        for n in neighbour_cord:
-            x = current_x + n[0]
-            y = current_y + n[1]
-            if 0 <= x < len(matrix) and 0 <= y < len(matrix):
-                c = Node()
-                c.position = (x, y)
-                c.parent = Node
-                neighbours.append(c)
-        return neighbours
+ 
     
     
     
@@ -165,7 +167,7 @@ def astar(knowledge_grid,start,end):
         current = Initial.get()
         if current == end:
             break
-        for n in knowledge_grid.get_neigbours(current):
+        for n in current.get_neigbours():
             Cost_Counter= cost_now[current]+knowledge_grid.cost(current,n)
             if n not in cost_now or Cost_Counter < cost_now[n]:
                 cost_now[n] = Cost_Counter

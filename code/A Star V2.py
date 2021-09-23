@@ -145,25 +145,25 @@ def astar(knowledge_grid,start,end):
     
     while not pQueue.empty():
         current = pQueue.get()
+        # print("current", current)
 
         # Add the current node to the closed list
-        closed.append(current)
+        closed.append(current.position)
 
         # Check if we have reached the goal, return the path
         if current == end:
-            print("goal!")
+            print("Astar goal!")
             path = []
             while current != start:
                 path.append(current.position)
                 current = current.parent
-            
-            #path.append(start) 
+            path.append(start.position) 
             # Return reversed path
             return path[::-1]
 
         for n in current.get_neigbours():
             #check if neighbor is in closed set
-            if n in closed:
+            if n.position in closed:
                 continue
 
             #calculate heuristics for the neighbor
@@ -176,15 +176,18 @@ def astar(knowledge_grid,start,end):
             #add n to priority queue
             (x, y) = n.position
             if knowledge_grid[x][y] != 1:
+                # print("add to queue", n)
                 pQueue.insert(n,n.f)
 
     return None
 
 def implement(matrix, knowledge, path):
-  for itr in  range(len(path)):
+  for itr in  range(1,len(path)):
     i = path[itr][0]
     j = path[itr][1]
+    print("(i,j) -- ", i, j)
     if matrix[i][j] == 1:
+      print("ended node", path[itr-1])  
       return path[itr-1]
     if i+1<len(matrix) and matrix[i+1][j]==1:
       knowledge[i+1][j] = 1
@@ -195,6 +198,34 @@ def implement(matrix, knowledge, path):
     if j-1>0 and matrix[i][j-1]==1:
       knowledge[i][j-1] = 1
   return path[len(path)-1]
+
+def repeated(matrix, knowledge, start, end):
+    flag = False
+    while True:
+        print("################")
+        print_grid(knowledge)
+        path = astar(knowledge, start, end)
+        print(path)
+
+        if path:
+            last = implement(matrix, knowledge, path)
+            last_Node = Node(last)
+            
+            # if path[0] == last:
+            #     print("error?")
+            #     break
+            if path[len(path)-1] == last:
+                print("Agent goal!!")
+                flag = True
+                break
+            start = last_Node
+
+        else:
+            print("no path planned it got stuck")
+            break
+
+    return 0        
+    
 
 ######################################################
 # Function calls after this
@@ -212,8 +243,11 @@ start = Node()
 start.position = (0, 0)
 goal = Node()
 goal.position = (4, 4)
-s = astar(matrix, start, goal)
-print(s)
+
+print(repeated(matrix, knowledge, start, goal))
+
+# s = astar(matrix, start, goal)
+# print(s)
 pQueue = PriorityQueue()
 node1 = Node([0,0],)
 node2 = Node([2,2],[1,2])

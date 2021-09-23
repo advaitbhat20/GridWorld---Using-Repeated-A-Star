@@ -1,5 +1,4 @@
-import numpy as np
-#import pandas as pd
+from typing import AsyncGenerator
 import random
 import threading
 import math
@@ -138,6 +137,7 @@ def calc_chebyshev(a,b):
     return max(abs(a[0]-b[0]), abs(a[1]-b[1]))
 
 def astar(knowledge_grid,start,end):
+    grid_len = len(knowledge_grid)
     # Initialize a priority queue
     pQueue = PriorityQueue()
     pQueue.insert(start,0)
@@ -168,7 +168,7 @@ def astar(knowledge_grid,start,end):
 
             #calculate heuristics for the neighbor
             n.g = current.g + 1
-            n.h = calc_manhattan(n.position, [5,5])
+            n.h = calc_manhattan(n.position, [grid_len-1,grid_len-1])
             n.f = n.g + n.h
 
             #check if node is in priority queue if yes does it have lower value?
@@ -230,10 +230,11 @@ def repeated(matrix, knowledge, start, end):
 ######################################################
 # Function calls after this
 
-matrix = create_grid(5)
+grid_len = 5
+matrix = create_grid(grid_len)
 print_grid(matrix)
 
-knowledge = [ [ 0 for i in range(5) ] for j in range(5) ]
+knowledge = [ [ 0 for i in range(grid_len) ] for j in range(grid_len) ]
 
 print("")
 print_grid(knowledge)
@@ -242,17 +243,14 @@ print("")
 start = Node()
 start.position = (0, 0)
 goal = Node()
-goal.position = (4, 4)
+goal.position = (grid_len-1, grid_len-1)
 
 print(repeated(matrix, knowledge, start, goal))
 
-# s = astar(matrix, start, goal)
-# print(s)
-pQueue = PriorityQueue()
-node1 = Node([0,0],)
-node2 = Node([2,2],[1,2])
-node3 = Node([1,3],[1,2])
+######################################
+# Things to do:
+#     use hashmap instead of closed list
+#     not sure but check this : add logic to check if the neighbor node is already in the priority queue and whether there is better heuristic for us to consider ?
+#     check the infinite loop case
+#     get path from all the traversed path by the Agent
 
-node1.f = calc_manhattan(node1.position, [5,5])
-node2.f = calc_manhattan(node2.position, [5,5])
-node3.f = calc_manhattan(node3.position, [5,5])

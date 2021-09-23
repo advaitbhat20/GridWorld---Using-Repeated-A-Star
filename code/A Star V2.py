@@ -1,4 +1,3 @@
-from typing import AsyncGenerator
 import random
 import threading
 import math

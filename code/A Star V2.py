@@ -200,6 +200,12 @@ def implement(matrix, knowledge, path):
 
 def repeated(matrix, knowledge, start, end):
     flag = False
+    #Update knowledge for the first time from the start position
+    i = j = 0
+    if i+1 < len(matrix) and matrix[i+1][j] == 1:
+      knowledge[i+1][j] = 1
+    if j+1 < len(matrix[0]) and matrix[i][j+1] == 1:
+      knowledge[i][j+1] = 1
     while True:
         print("################")
         print_grid(knowledge)
@@ -209,7 +215,7 @@ def repeated(matrix, knowledge, start, end):
         if path:
             last = implement(matrix, knowledge, path)
             last_Node = Node(last)
-            
+            print("lastNode", last_Node)
             # if path[0] == last:
             #     print("error?")
             #     break
@@ -231,6 +237,7 @@ def repeated(matrix, knowledge, start, end):
 
 grid_len = 5
 matrix = create_grid(grid_len)
+# matrix = [[0,1,1,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,1,0,1,0]]
 print_grid(matrix)
 
 knowledge = [ [ 0 for i in range(grid_len) ] for j in range(grid_len) ]
@@ -250,6 +257,6 @@ print(repeated(matrix, knowledge, start, goal))
 # Things to do:
 #     use hashmap instead of closed list
 #     not sure but check this : add logic to check if the neighbor node is already in the priority queue and whether there is better heuristic for us to consider ?
-#     check the infinite loop case
+#     check the infinite loop case - done
 #     get path from all the traversed path by the Agent
 

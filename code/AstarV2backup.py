@@ -2,9 +2,6 @@ import random
 import threading
 import math
 from queue import Queue
-from queue import PriorityQueue
-
-from dataclasses import dataclass, field
 
 try:
     from _queue import Empty
@@ -26,15 +23,6 @@ class Node:
     # Compare nodes
     def __eq__(self, other):
         return self.position == other.position
-
-    def __ne__(self, other):
-        return not (self.position == other.position)
-
-    def __lt__(self, other):
-        return (self.f < other.f)
-
-    def __gt__(self, other):
-        return (self.f > other.f)
 
     def __hash__(self):
         # hash(custom_object)
@@ -61,63 +49,58 @@ class Node:
         return neighbours
     
 
-@dataclass(order=True)
-class PrioritizedItem:
-    priority: float
-    item: object = field()
-
 #Priority Queue to store the nodes and arrange them in increasing order of the total cost (current cost + heuristic cost)
-# class PriorityQueue:
+class PriorityQueue:
   
-#   def __init__(self):
-#     self.queue = list()
-#     self.mutex = threading.Lock()
-#     self.not_empty = threading.Condition(self.mutex)
+  def __init__(self):
+    self.queue = list()
+    self.mutex = threading.Lock()
+    self.not_empty = threading.Condition(self.mutex)
 
-#     # Notify not_full whenever an item is removed from the queue;
-#     # a thread waiting to put is notified then.
-#     self.not_full = threading.Condition(self.mutex)
+    # Notify not_full whenever an item is removed from the queue;
+    # a thread waiting to put is notified then.
+    self.not_full = threading.Condition(self.mutex)
 
-#     # Notify all_tasks_done whenever the number of unfinished tasks
-#     # drops to zero; thread waiting to join() is notified to resume
-#     self.all_tasks_done = threading.Condition(self.mutex)
-#     self.unfinished_tasks = 0
+    # Notify all_tasks_done whenever the number of unfinished tasks
+    # drops to zero; thread waiting to join() is notified to resume
+    self.all_tasks_done = threading.Condition(self.mutex)
+    self.unfinished_tasks = 0
     
     
-#   def insert(self, node,priority):
-#     # if queue is empty
-#     if self.size() == 0:
-#       # add the new node
-#       self.queue.append(node)
-#     else:
-#       # traverse the queue to find the right place for new node
-#       for x in range(0, self.size()):
-#         # if the heuristic of new node is greater than equal to the ones in queue then traverse down
-#         if node.f >= self.queue[x].f:
-#           # if we have traversed the complete queue
-#           if x == (self.size()-1):
-#             # add new node at the end
-#             self.queue.insert(x+1, node)
-#           else:
-#             continue
-#         else:
-#           self.queue.insert(x, node)
-#           return True
+  def insert(self, node,priority):
+    # if queue is empty
+    if self.size() == 0:
+      # add the new node
+      self.queue.append(node)
+    else:
+      # traverse the queue to find the right place for new node
+      for x in range(0, self.size()):
+        # if the heuristic of new node is greater than equal to the ones in queue then traverse down
+        if node.f >= self.queue[x].f:
+          # if we have traversed the complete queue
+          if x == (self.size()-1):
+            # add new node at the end
+            self.queue.insert(x+1, node)
+          else:
+            continue
+        else:
+          self.queue.insert(x, node)
+          return True
   
-#   def get(self):
-#     # remove the first node from the queue
-#     return self.queue.pop(0)
+  def get(self):
+    # remove the first node from the queue
+    return self.queue.pop(0)
     
-#   def show(self):
-#     for x in self.queue:
-#       print (str(x.position)+" - "+str(x.f))
+  def show(self):
+    for x in self.queue:
+      print (str(x.position)+" - "+str(x.f))
   
-#   def size(self):
-#     return len(self.queue)
+  def size(self):
+    return len(self.queue)
 
-#   def empty(self):
-#       with self.mutex:
-#             return not self.size()
+  def empty(self):
+      with self.mutex:
+            return not self.size()
 
 #creating a randomized grid world
 def create_grid(n):
@@ -156,13 +139,12 @@ def astar(knowledge_grid,start,end):
     grid_len = len(knowledge_grid)
     # Initialize a priority queue
     pQueue = PriorityQueue()
-    pQueue.put(PrioritizedItem(0.0, start))
-    # pQueue.show()
+    pQueue.insert(start,0)
     # closed = []
     closed_hash = {}    
     
     while not pQueue.empty():
-        current = pQueue.get().item
+        current = pQueue.get()
         # print("current", current)
 
         # Add the current node to the closed list
@@ -200,8 +182,7 @@ def astar(knowledge_grid,start,end):
             (x, y) = n.position
             if knowledge_grid[x][y] != 1:
                 # print("add to queue", n)
-                # print(n.f, n, "here")
-                pQueue.put(PrioritizedItem(float(n.f), n))
+                pQueue.insert(n,n.f)
 
     return None
 
@@ -255,15 +236,15 @@ def repeated(matrix, knowledge, start, end):
             print("no path planned it got stuck")
             break
 
-    return path        
+    return 0        
     
 
 ######################################################
 # Function calls after this
 
 grid_len = 5
-matrix = create_grid(grid_len)
-# matrix = [[0,0,0,0,0],[0,1,1,1,1],[0,1,0,0,0],[0,1,0,0,0],[0,0,0,0,0]]
+# matrix = create_grid(grid_len)
+matrix = [[0,0,0,0,0],[0,1,1,1,1],[0,1,0,0,0],[0,1,0,0,0],[0,0,0,0,0]]
 print_grid(matrix)
 
 knowledge = [ [ 0 for i in range(grid_len) ] for j in range(grid_len) ]
@@ -284,13 +265,9 @@ print("knowledge")
 print_grid(knowledge)
 print("Final", astar(knowledge, start, goal))
 
-# print(astar(matrix, start, goal))
 ######################################
-# Default Priority Queue Used
-
 # Things to do:
 #     use hashmap instead of closed list - done
 #     not sure but check this : add logic to check if the neighbor node is already in the priority queue and whether there is better heuristic for us to consider ?
 #     check the infinite loop case - done
 #     get path from all the traversed path by the Agent - done by using Astar again
-

@@ -12,16 +12,11 @@ def Astar(knowledge_grid,start,end):
     # Initialize a priority queue
     pQueue = PriorityQueue()
     pQueue.put(PrioritizedItem(0.0, start))
-    # pQueue.show()
-    # closed = []
     closed_hash = {}    
     
     while not pQueue.empty():
         current = pQueue.get().item
         # print("current", current)
-
-        # Add the current node to the closed list
-        # closed.append(current.position)
 
         #Using dictionary instead of a list, to make retrival easier
         closed_hash[current.position] = True
@@ -30,7 +25,7 @@ def Astar(knowledge_grid,start,end):
 
         # Check if we have reached the goal, return the path
         if current == end:
-            print("Astar goal!")
+            # print("Astar goal!")
             path = []
             while current != start:
                 path.append(current.position)
@@ -55,7 +50,6 @@ def Astar(knowledge_grid,start,end):
             (x, y) = n.position
             if knowledge_grid[x][y] != 1:
                 # print("add to queue", n)
-                # print(n.f, n, "here")
                 pQueue.put(PrioritizedItem(float(n.f), n))
 
     return None

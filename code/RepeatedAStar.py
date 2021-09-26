@@ -1,11 +1,10 @@
-from Utils import create_grid, print_grid
+from Utils import create_grid, print_grid, count_blocks
 from Node import Node
 from Astar import Astar
-from Exceution import repeated
+from Exceution import repeated       
 
-grid_len = 101
-matrix = create_grid(grid_len)
-# matrix = [[0,0,0,0,0],[0,1,1,1,1],[0,1,0,0,0],[0,1,0,0,0],[0,0,0,0,0]]
+grid_len = 5
+matrix = create_grid(grid_len, 0.75)
 print_grid(matrix)
 
 knowledge = [ [ 0 for i in range(grid_len) ] for j in range(grid_len) ]

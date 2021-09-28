@@ -11,10 +11,9 @@ result = {
     "Density": [],
     "Outcome": [],
     "Length_of_path": []
-
 }
-for i in range(1,100):
-    for j in range(100):
+for i in range(1, 100, 1):
+    for j in range(20):
         grid_len = 101
         result["Dimension"].append(grid_len)
         result["Probability"].append(i/100)
@@ -34,11 +33,11 @@ for i in range(1,100):
         outcome = 0
         if res != None:
             outcome = 1
-            path = len(Astar(matrix, start, goal))
+            path = len(Astar(matrix, start, goal, "manhattan"))
         else:
             path = None
         result["Outcome"].append(outcome)
         result["Length_of_path"].append(path)
 
 data = pd.DataFrame(result)
-data.to_csv("Data.csv", index=False, encoding='utf-8')
+data.to_csv("Data1.csv", index=False, encoding='utf-8')

@@ -1,7 +1,7 @@
 from Utils import create_grid, print_grid, count_blocks
 from Node import Node
-from Astar import Astar
-from Exceution import repeated
+from RepeatedAStar import Astar
+from RepeatedAStar import repeated
 import pandas as pd
 from time import time
 
@@ -22,8 +22,8 @@ result = {
 
 }
 for j in range(50):
-    p0 = 0.31
-    grid_len = 20
+    p0 = 0.36
+    grid_len = 101
     result["Dimension"].append(grid_len)
     result["Probability"].append(p0)
     matrix = create_grid(grid_len, p0)
@@ -40,13 +40,14 @@ for j in range(50):
     # print_grid(matrix)
     #MANHATTAN METRICS
     start_time = time()
-    res = repeated(matrix, knowledge, start, goal)
+    cost = 0
+    res = repeated(matrix, knowledge, start, goal, cost)
     end = time() - start_time
     result["Manhattan_time"] = end
     outcome = 0
-    if res != None:
+    if res[0] != None:
         outcome = 1
-        path = len(Astar(matrix, start, goal))
+        path = len(Astar(matrix, start, goal)[0])
     else:
         path = None
     result["Manhattan_outcome"].append(outcome)
@@ -54,7 +55,8 @@ for j in range(50):
 
     #EUCLIDEAN METRICS
     start_time = time()
-    res = repeated(matrix, knowledge, start, goal, "euclidean")
+    cost = 0
+    res = repeated(matrix, knowledge, start, goal, cost, "euclidean")
     end = time() - start_time
     result["Euclidean_time"] = end
     outcome = 0
@@ -68,7 +70,8 @@ for j in range(50):
 
     #CHEBYSHEV METRICS
     start_time = time()
-    res = repeated(matrix, knowledge, start, goal, "chebyshev")
+    cost = 0
+    res = repeated(matrix, knowledge, start, goal,cost, "chebyshev")
     end = time() - start_time
     result["Chebyshev_time"] = end
     outcome = 0

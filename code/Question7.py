@@ -13,6 +13,8 @@ def implement(matrix, knowledge, path):
         if matrix[i][j] == 1:
             knowledge[i][j] = 1
             return path[itr-1]
+        else:
+            knowledge[i][j] = 0
         if i+1<len(matrix):
             if matrix[i+1][j]==1:
                 knowledge[i+1][j] = 1
@@ -74,6 +76,7 @@ result = {
     "No_of_blocks":[],
     "Density": [],
     "Total_Cells_Discovered": [],
+    "Total_Blocked_Cells_Discovered": [],
     "Manhattan_outcome": [],
     "Manhattan_Trajectory_length": [],
     "Manhattan_Actual_length": [],
@@ -83,7 +86,7 @@ result = {
 p0 = 36
 for i in range(1,p0, 4):
     for j in range(50):
-        print(i, j, "iteration")
+        # print(i, j, "iteration")
         grid_len = 101
         result["Dimension"].append(grid_len)
         result["Probability"].append(i/100)
@@ -103,14 +106,14 @@ for i in range(1,p0, 4):
         density = no_of_blocks/(grid_len**2)
         result["Density"].append(density)
 
-        # print_grid(matrix)
+        #print_grid(matrix)
         #MANHATTAN METRICS
         cost = 1
         begin = time()
         res = repeated(matrix, knowledge, start, goal, cost)
         end = time() - begin
         # print(res)
-        # print_grid(knowledge)
+        #print_grid(knowledge)
         outcome = 0
         if res[0] != None:
             outcome = 1
@@ -128,17 +131,24 @@ for i in range(1,p0, 4):
             result["Manhattan_Trajectory_length"].append(None)
 
         cells_not_covered  = 0
+        cells_knowledge = 0
         for k in range(len(knowledge)):
             for l in range(len(knowledge[0])):
                 if k == 0 and l == 0:
                     continue
                 if knowledge[k][l] == '-':
                     cells_not_covered+=1
+                if knowledge[k][l] == 1:
+                    cells_knowledge += 1
         
+        # print("Hello", grid_len**2-cells_not_covered)
+        # print("Bhag", cells_knowledge)
+        # print_grid(knowledge)
+        result["Total_Blocked_Cells_Discovered"].append(cells_knowledge)
         result["Total_Cells_Discovered"].append(grid_len**2-cells_not_covered)
         result["Time_taken"].append(end)
         result["Manhattan_outcome"].append(outcome)
 
-print(result)
+# print(result)
 data = pd.DataFrame(result)
-data.to_csv("Question6-total-final.csv", index=False, encoding='utf-8')
+data.to_csv("Question6_2-total-final.csv", index=False, encoding='utf-8')

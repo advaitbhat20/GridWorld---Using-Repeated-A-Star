@@ -1,7 +1,7 @@
 from Utils import create_grid, print_grid, count_blocks
 from Node import Node
-from Astar import Astar
-from Exceution import repeated
+from RepeatedAStar import Astar
+from RepeatedAStar import repeated
 import pandas as pd
 
 result = {
@@ -29,15 +29,21 @@ for i in range(1, 100, 1):
         result["Density"].append(density)
 
         # print_grid(matrix)
-        res = repeated(matrix, knowledge, start, goal)
+        cost = 0
+        res = repeated(matrix, knowledge, start, goal, cost)
         outcome = 0
-        if res != None:
+        if res[0] != None:
             outcome = 1
-            path = len(Astar(matrix, start, goal, "manhattan"))
+            res_1 = Astar(knowledge, start, goal, "manhattan")
+
+            path = len(res_1[0])
+            result["Length_of_path"].append(path)
+
         else:
             path = None
+            result["Length_of_path"].append(None)
+
         result["Outcome"].append(outcome)
-        result["Length_of_path"].append(path)
 
 data = pd.DataFrame(result)
 data.to_csv("Data1.csv", index=False, encoding='utf-8')
